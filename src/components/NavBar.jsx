@@ -5,11 +5,10 @@ import { Link, NavLink } from "react-router-dom";
 const NavBar = () => {
   const [visible, setVisible] = useState(false);
 
-  
   const NavLinkComponent = ({ to, label }) => (
     <NavLink
       to={to}
-      onClick={() => setVisible(false)}  // Ensures menu closes on mobile
+      onClick={() => setVisible(false)} // Ensures menu closes on mobile
       className={({ isActive }) =>
         isActive
           ? "flex flex-col items-center gap-1 text-green-700 border-b-2 border-green-700 pb-1"
@@ -20,23 +19,25 @@ const NavBar = () => {
     </NavLink>
   );
 
-  
-  const navLinks = useMemo(() => [
-    { to: "/", label: "HOME" },
-    { to: "/collection", label: "COLLECTION" },
-    { to: "/about", label: "ABOUT" },
-    { to: "/contact", label: "CONTACT" },
-  ], []);
+  const navLinks = useMemo(
+    () => [
+      { to: "/", label: "HOME" },
+      { to: "/collection", label: "COLLECTION" },
+      { to: "/about", label: "ABOUT" },
+      { to: "/contact", label: "CONTACT" },
+    ],
+    []
+  );
 
   return (
     <nav className="relative bg-white shadow-sm py-4 px-5">
       <div className="flex items-center justify-between font-medium">
-        
-        <img src={assets.logo} className="w-36" alt="Logo" />
-
+        <Link to='/'>
+          <img src={assets.logo} className="w-36" alt="Logo" />
+        </Link>
         {/* Desktop NavLinks */}
         <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
-          {navLinks.map(link => (
+          {navLinks.map((link) => (
             <NavLinkComponent key={link.to} to={link.to} label={link.label} />
           ))}
         </ul>
@@ -85,7 +86,9 @@ const NavBar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed top-0 right-0 bottom-0 bg-white shadow-lg p-5 transition-transform duration-300 ${visible ? "translate-x-0" : "translate-x-full"} sm:hidden w-4/5`}
+        className={`fixed top-0 right-0 bottom-0 bg-white shadow-lg p-5 transition-transform duration-300 ${
+          visible ? "translate-x-0" : "translate-x-full"
+        } sm:hidden w-4/5`}
       >
         <div className="flex justify-end mb-6">
           <img
@@ -97,7 +100,7 @@ const NavBar = () => {
           />
         </div>
         <ul className="flex flex-col gap-5 text-gray-700">
-          {navLinks.map(link => (
+          {navLinks.map((link) => (
             <NavLinkComponent key={link.to} to={link.to} label={link.label} />
           ))}
         </ul>
