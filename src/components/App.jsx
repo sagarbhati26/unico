@@ -10,6 +10,7 @@ import PlaceOrder from '../pages/PlaceOrder'
 import Product from '../pages/Product'
 import Collection from '../pages/Collection'
 import NavBar from './NavBar'
+import Footer from './Footer'
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
 
         
       </Routes>
-
+<Footer/>
     </div>
   )
 }
