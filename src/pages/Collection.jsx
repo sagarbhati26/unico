@@ -10,6 +10,7 @@ const Collection = () => {
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
+  const [order, setOrder] = useState("relevant");
 
   const toggleCategory = (e) => {
     const value = e.target.value;
@@ -31,33 +32,40 @@ const Collection = () => {
 
   const applyFilter = () => {
     let productsCopy = products.slice();
-  
+
     // Filter by category
     if (category.length > 0) {
-      productsCopy = productsCopy.filter((item) => 
-        category.includes(item.category.toLowerCase()) // Ensure case-insensitive match
+      productsCopy = productsCopy.filter((item) =>
+        category.includes(item.category.toLowerCase())
       );
     }
-  
+
     // Filter by subcategory
     if (subCategory.length > 0) {
-      productsCopy = productsCopy.filter((item) => 
+      productsCopy = productsCopy.filter((item) =>
         subCategory.includes(item.subCategory)
       );
     }
-  
-    // console.log("Filtered Products:", productsCopy); // Debugging line to verify filtered products
+
+    // Sort products based on order
+    if (order === "low-high") {
+      productsCopy.sort((a, b) => a.price - b.price); // Sort by price low to high
+    } else if (order === "high-low") {
+      productsCopy.sort((a, b) => b.price - a.price); // Sort by price high to low
+    }
+
     setFilterProducts(productsCopy);
   };
-  
 
-  useEffect(() => {
-    setFilterProducts(products);
-  }, [products]);
-
+  // Apply initial filter based on products when component mounts or products change
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory]);
+  }, [products]);
+
+  // Re-apply filter when category, subCategory, or order changes
+  useEffect(() => {
+    applyFilter();
+  }, [category, subCategory, order]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
@@ -87,7 +95,7 @@ const Collection = () => {
                 type="checkbox"
                 value="men"
                 onChange={toggleCategory}
-              />{" "}
+              />
               Men
             </p>
             <p className="flex gap-2">
@@ -96,7 +104,7 @@ const Collection = () => {
                 type="checkbox"
                 value="women"
                 onChange={toggleCategory}
-              />{" "}
+              />
               Women
             </p>
             <p className="flex gap-2">
@@ -105,7 +113,7 @@ const Collection = () => {
                 type="checkbox"
                 value="kids"
                 onChange={toggleCategory}
-              />{" "}
+              />
               Kids
             </p>
           </div>
@@ -121,27 +129,27 @@ const Collection = () => {
               <input
                 className="w-3"
                 type="checkbox"
-                value="Top"
+                value="Topwear"
                 onChange={toggleSubCategory}
-              />{" "}
+              />
               Top
             </p>
             <p className="flex gap-2">
               <input
                 className="w-3"
                 type="checkbox"
-                value="Bottoms"
+                value="Bottomwear"
                 onChange={toggleSubCategory}
-              />{" "}
+              />
               Bottoms
             </p>
             <p className="flex gap-2">
               <input
                 className="w-3"
                 type="checkbox"
-                value="Winters"
+                value="Winterwear"
                 onChange={toggleSubCategory}
-              />{" "}
+              />
               Winters
             </p>
           </div>
@@ -152,7 +160,11 @@ const Collection = () => {
       <div className="flex-1">
         <div className="flex justify-between text-base sm:text-2xl mb-4">
           <Title text1="All" text2="Collection" />
-          <select className="border-2 border-gray-300 text-sm px-2">
+          <select
+            value={order}
+            onChange={(e) => setOrder(e.target.value)}
+            className="border-2 border-gray-300 text-sm px-2"
+          >
             <option value="relevant">Sort by: relevant</option>
             <option value="low-high">Sort by: low-high</option>
             <option value="high-low">Sort by: high-low</option>
