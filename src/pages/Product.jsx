@@ -3,79 +3,131 @@ import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/shopContext";
 import { assets } from "../assets/assets";
 
+const ProductImageGallery = ({ images, selectedImage, onSelectImage }) => (
+  <div className="flex-1 flex flex-col items-center gap-4">
+    <div className="flex gap-3 mb-4">
+      {images.map((img, index) => (
+        <img
+          key={index}
+          src={img}
+          alt={`Product thumbnail ${index + 1}`}
+          className={`w-16 h-16 object-cover cursor-pointer rounded-lg border-2 transition-transform hover:scale-110 ${
+            img === selectedImage ? "border-green-500" : "border-gray-300"
+          }`}
+          onClick={() => onSelectImage(img)}
+          aria-label={`Select image ${index + 1}`}
+        />
+      ))}
+    </div>
+    <div className="w-full flex items-center justify-center">
+      <img
+        className="w-full max-w-md object-cover border border-green-500 shadow-lg rounded-lg"
+        src={selectedImage}
+        alt="Selected Product"
+      />
+    </div>
+  </div>
+);
+
+const ProductInfo = ({ productData, selectedSize, onSelectSize }) => (
+  <div className="flex-1 text-gray-800">
+    <h1 className="text-3xl font-bold mb-4">{productData.name}</h1>
+    <div className="flex items-center gap-1 mb-6">
+      {Array(5)
+        .fill()
+        .map((_, index) => (
+          <img
+            key={index}
+            src={assets.star_icon}
+            alt="star"
+            className="w-5 h-5 text-yellow-500"
+          />
+        ))}
+    </div>
+    <p className="text-2xl font-semibold text-green-600 mb-4">
+      ${productData.price}
+    </p>
+    <p className="text-gray-600 leading-relaxed mb-6">{productData.description}</p>
+
+    {/* Select Size Section */}
+    <div className="mb-8">
+      <p className="font-medium text-gray-700 mb-3">Select Size</p>
+      <div className="flex gap-3">
+        {productData.sizes.map((size) => (
+          <button
+            key={size}
+            onClick={() => onSelectSize(size)}
+            className={`px-4 py-2 rounded-lg border font-medium transition-colors ${
+              selectedSize === size
+                ? "bg-green-500 text-white border-green-500"
+                : "bg-white text-gray-800 border-gray-300 hover:border-green-500"
+            }`}
+            aria-label={`Select size ${size}`}
+          >
+            {size}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Add to Cart Button */}
+    <button className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg mb-6">
+      Add to Cart
+    </button>
+    <div className="text-sm text-gray-500 mt-4 space-y-2">
+      <p>100% Original</p>
+      <p>Cash on Delivery Available</p>
+      <p>Easy Returns and Exchanges</p>
+    </div>
+  </div>
+);
+
+const ProductDetails = ({ description }) => (
+  <div className="mt-20">
+    <div className="flex border-b">
+      <p className="border-r px-5 py-5 text-sm cursor-pointer">Description</p>
+      <p className="px-5 py-5 text-sm cursor-pointer">Reviews (122)</p>
+    </div>
+    <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500">
+      <p>{description}</p>
+      <p>{description}</p>
+    </div>
+  </div>
+);
+
 const Product = () => {
   const { productId } = useParams();
   const { products } = useContext(ShopContext);
-  const [productData, setProductData] = useState(false);
+  const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
-
-  const fetchProductData = async () => {
-    products.forEach((item) => {
-      if (item._id === productId) {
-        setProductData(item);
-        setImage(item.image[0]);
-        return;
-      }
-    });
-  };
+  const [selectedSize, setSelectedSize] = useState("");
 
   useEffect(() => {
-    fetchProductData();
-  }, [productId]);
+    const product = products.find((item) => item._id === productId);
+    if (product) {
+      setProductData(product);
+      setImage(product.image[0]);
+    }
+  }, [productId, products]);
 
   return productData ? (
-    <div className="border-t-2 pt-2 transition-opacity ease-in duration-200">
-      {/* Product Data */}
-      <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
-        {/* Product Image Gallery */}
-        <div className="flex flex-1 flex-col-reverse gap-4 sm:flex-row">
-          <div className="flex flex-col gap-3">
-            {productData.image.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`Product thumbnail ${index}`}
-                className={`w-16 h-16 object-cover cursor-pointer border-2 rounded-md transition-transform transform hover:scale-105 ${
-                  img === image ? "border-green-500" : "border-gray-300"
-                }`}
-                onClick={() => setImage(img)}
-              />
-            ))}
-          </div>
-          <div className="flex-1 flex items-center justify-center">
-            <img
-              className="w-full max-w-lg object-cover border border-green-500 shadow-md rounded-md"
-              src={image}
-              alt=""
-            />
-          </div>
-        </div>
-        {/* Product Info */}
-        <div className="flex-1">
-          <h1 className="text-3xl font-semibold mb-4 text-gray-800">
-            {productData.name}
-          </h1>
-          <div className="flex items-center mt-2 gap-1">
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-          </div>
-          <p className="text-xl font-medium text-green-600 mb-4">
-            ${productData.price}
-          </p>
-          <p className="text-gray-700 leading-relaxed mb-6">
-            {productData.description}
-          </p>
-          <button className="px-6 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors">
-            Add to Cart
-          </button>
-        </div>
+    <div className="border-t pt-8 px-6 sm:px-16 bg-gray-50 transition-opacity ease-in duration-200">
+      <div className="flex flex-col sm:flex-row gap-16">
+        <ProductImageGallery
+          images={productData.image}
+          selectedImage={image}
+          onSelectImage={setImage}
+        />
+        <ProductInfo
+          productData={productData}
+          selectedSize={selectedSize}
+          onSelectSize={setSelectedSize}
+        />
       </div>
+      <ProductDetails description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni alias sapiente placeat dolorem consectetur voluptates modi provident tempore, nobis tempora amet enim voluptas suscipit nulla, odit inventore labore velit hic?" />
     </div>
   ) : (
-    <div className="opacity-0">Loading...</div>
+    <div className="text-center py-20 text-gray-500">Loading...</div>
   );
 };
 
