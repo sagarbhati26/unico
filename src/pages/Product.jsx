@@ -4,6 +4,50 @@ import { ShopContext } from "../context/shopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
 
+const Product = () => {
+  const { productId } = useParams();
+  const { products, addToCart, increaseCartItem, decreaseCartItem, cartItems } = useContext(ShopContext);
+  const [productData, setProductData] = useState(null);
+  const [image, setImage] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
+
+  useEffect(() => {
+    const product = products.find((item) => item._id === productId);
+    if (product) {
+      setProductData(product);
+      setImage(product.image[0]);
+    }
+  }, [productId, products]);
+
+  // Determine quantity in cart for this specific product and size
+  const quantity = cartItems[productId]?.[selectedSize] || 0;
+
+  return productData ? (
+    <div className="border-t pt-8 px-6 sm:px-16 bg-gray-50 transition-opacity ease-in duration-200">
+      <div className="flex flex-col sm:flex-row gap-16">
+        <ProductImageGallery
+          images={productData.image}
+          selectedImage={image}
+          onSelectImage={setImage}
+        />
+        <ProductInfo
+          productData={productData}
+          selectedSize={selectedSize}
+          onSelectSize={setSelectedSize}
+          addToCart={() => addToCart(productId, selectedSize)}
+          increaseCartItem={() => increaseCartItem(productId, selectedSize)}
+          decreaseCartItem={() => decreaseCartItem(productId, selectedSize)}
+          quantity={quantity}
+        />
+      </div>
+      <ProductDetails description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni alias sapiente placeat dolorem consectetur voluptates modi provident tempore, nobis tempora amet enim voluptas suscipit nulla, odit inventore labore velit hic?" />
+      <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
+    </div>
+  ) : (
+    <div className="text-center py-20 text-gray-500">Loading...</div>
+  );
+};
+
 const ProductImageGallery = ({ images, selectedImage, onSelectImage }) => (
   <div className="flex-1 flex flex-col items-center gap-4">
     <div className="flex gap-3 mb-4">
@@ -30,27 +74,20 @@ const ProductImageGallery = ({ images, selectedImage, onSelectImage }) => (
   </div>
 );
 
-const ProductInfo = ({ productData, selectedSize, onSelectSize }) => (
+const ProductInfo = ({ productData, selectedSize, onSelectSize, addToCart, increaseCartItem, decreaseCartItem, quantity }) => (
   <div className="flex-1 text-gray-800">
     <h1 className="text-3xl font-bold mb-4">{productData.name}</h1>
     <div className="flex items-center gap-1 mb-6">
       {Array(5)
         .fill()
         .map((_, index) => (
-          <img
-            key={index}
-            src={assets.star_icon}
-            alt="star"
-            className="w-5 h-5 text-yellow-500"
-          />
+          <img key={index} src={assets.star_icon} alt="star" className="w-5 h-5 text-yellow-500" />
         ))}
     </div>
-    <p className="text-2xl font-semibold text-green-600 mb-4">
-      ${productData.price}
-    </p>
+    <p className="text-2xl font-semibold text-green-600 mb-4">${productData.price}</p>
     <p className="text-gray-600 leading-relaxed mb-6">{productData.description}</p>
 
-    {/* Select Size Section */}
+    {/* Size Selection */}
     <div className="mb-8">
       <p className="font-medium text-gray-700 mb-3">Select Size</p>
       <div className="flex gap-3">
@@ -71,10 +108,32 @@ const ProductInfo = ({ productData, selectedSize, onSelectSize }) => (
       </div>
     </div>
 
-    {/* Add to Cart Button */}
-    <button className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg mb-6">
-      Add to Cart
-    </button>
+    {/* Add to Cart / Counter Buttons */}
+    {quantity > 0 ? (
+      <div className="flex items-center gap-3">
+        <button
+          onClick={decreaseCartItem}
+          className="px-4 py-2 bg-gray-300 rounded-lg font-semibold text-gray-800 hover:bg-gray-400 transition"
+        >
+          -
+        </button>
+        <span className="font-semibold text-xl">{quantity}</span>
+        <button
+          onClick={increaseCartItem}
+          className="px-4 py-2 bg-gray-300 rounded-lg font-semibold text-gray-800 hover:bg-gray-400 transition"
+        >
+          +
+        </button>
+      </div>
+    ) : (
+      <button
+        onClick={addToCart}
+        className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg mb-6"
+      >
+        Add to Cart
+      </button>
+    )}
+
     <div className="text-sm text-gray-500 mt-4 space-y-2">
       <p>100% Original</p>
       <p>Cash on Delivery Available</p>
@@ -95,46 +154,5 @@ const ProductDetails = ({ description }) => (
     </div>
   </div>
 );
-
-const Product = () => {
-  const { productId } = useParams();
-  const { products } = useContext(ShopContext);
-  const [productData, setProductData] = useState(null);
-  const [image, setImage] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
-
-  useEffect(() => {
-    const product = products.find((item) => item._id === productId);
-    if (product) {
-      setProductData(product);
-      setImage(product.image[0]);
-    }
-  }, [productId, products]);
-
-  return productData ? (
-    <div className="border-t pt-8 px-6 sm:px-16 bg-gray-50 transition-opacity ease-in duration-200">
-      <div className="flex flex-col sm:flex-row gap-16">
-        <ProductImageGallery
-          images={productData.image}
-          selectedImage={image}
-          onSelectImage={setImage}
-        />
-        <ProductInfo
-          productData={productData}
-          selectedSize={selectedSize}
-          onSelectSize={setSelectedSize}
-        />
-      </div>
-      <ProductDetails description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni alias sapiente placeat dolorem consectetur voluptates modi provident tempore, nobis tempora amet enim voluptas suscipit nulla, odit inventore labore velit hic?" />
-      {/* related products */}
-    
-        <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
-      
-    </div>
-    
-  ) : (
-    <div className="text-center py-20 text-gray-500">Loading...</div>
-  );
-};
 
 export default Product;

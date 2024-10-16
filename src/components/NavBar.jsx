@@ -5,7 +5,7 @@ import { ShopContext } from "../context/shopContext";
 
 const NavBar = () => {
   const [visible, setVisible] = useState(false);
-  const {setShowSearch } = useContext(ShopContext);
+  const {setShowSearch,cartItemCount } = useContext(ShopContext);
 
   const NavLinkComponent = ({ to, label }) => (
     <NavLink
@@ -68,13 +68,18 @@ const NavBar = () => {
           </div>
 
           <Link to="/cart" className="relative">
-            <img
-              src={assets.cart_icon}
-              className="w-5 cursor-pointer hover:opacity-80 transition-opacity"
-              alt="Cart"
-              aria-label="Cart"
-            />
-          </Link>
+  <img
+    src={assets.cart_icon}
+    className="w-5 cursor-pointer hover:opacity-80 transition-opacity"
+    alt="Cart"
+    aria-label="Cart"
+  />
+  {cartItemCount > 0 && (
+    <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-6 h-6 flex items-center justify-center font-bold shadow-md transform transition-transform duration-300 ease-in-out hover:scale-110">
+      {cartItemCount}
+    </span>
+  )}
+</Link>
 
           <img
             onClick={() => setVisible(true)}
