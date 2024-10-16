@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/shopContext";
 import { assets } from "../assets/assets";
+import RelatedProducts from "../components/RelatedProducts";
 
 const ProductImageGallery = ({ images, selectedImage, onSelectImage }) => (
   <div className="flex-1 flex flex-col items-center gap-4">
@@ -125,7 +126,12 @@ const Product = () => {
         />
       </div>
       <ProductDetails description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni alias sapiente placeat dolorem consectetur voluptates modi provident tempore, nobis tempora amet enim voluptas suscipit nulla, odit inventore labore velit hic?" />
+      {/* related products */}
+    
+        <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
+      
     </div>
+    
   ) : (
     <div className="text-center py-20 text-gray-500">Loading...</div>
   );
