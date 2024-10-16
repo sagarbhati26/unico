@@ -6,7 +6,15 @@ import RelatedProducts from "../components/RelatedProducts";
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, addToCart, increaseCartItem, decreaseCartItem, cartItems } = useContext(ShopContext);
+  const {
+    products,
+    currency,
+    addToCart,
+    increaseCartItem,
+    decreaseCartItem,
+    cartItems
+  } = useContext(ShopContext);
+
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
@@ -40,7 +48,7 @@ const Product = () => {
           quantity={quantity}
         />
       </div>
-      <ProductDetails description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni alias sapiente placeat dolorem consectetur voluptates modi provident tempore, nobis tempora amet enim voluptas suscipit nulla, odit inventore labore velit hic?" />
+      <ProductDetails description={productData.description} />
       <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
     </div>
   ) : (
@@ -74,7 +82,15 @@ const ProductImageGallery = ({ images, selectedImage, onSelectImage }) => (
   </div>
 );
 
-const ProductInfo = ({ productData, selectedSize, onSelectSize, addToCart, increaseCartItem, decreaseCartItem, quantity }) => (
+const ProductInfo = ({
+  productData,
+  selectedSize,
+  onSelectSize,
+  addToCart,
+  increaseCartItem,
+  decreaseCartItem,
+  quantity
+}) => (
   <div className="flex-1 text-gray-800">
     <h1 className="text-3xl font-bold mb-4">{productData.name}</h1>
     <div className="flex items-center gap-1 mb-6">
@@ -84,7 +100,10 @@ const ProductInfo = ({ productData, selectedSize, onSelectSize, addToCart, incre
           <img key={index} src={assets.star_icon} alt="star" className="w-5 h-5 text-yellow-500" />
         ))}
     </div>
-    <p className="text-2xl font-semibold text-green-600 mb-4">${productData.price}</p>
+    <p className="text-2xl font-semibold text-green-600 mb-4">
+      Rs.
+      {productData.price}
+    </p>
     <p className="text-gray-600 leading-relaxed mb-6">{productData.description}</p>
 
     {/* Size Selection */}

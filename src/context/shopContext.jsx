@@ -1,14 +1,15 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import { products } from "../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
   const currency = "Rs.";
-  const delivery_fees = 69;
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false); // Set to Boolean true
 const[cartItems,setCartItems]=useState({})
+const navigate = useNavigate
 
 const addToCart = async (itemId, selectSize) => {
   let cartData = structuredClone(cartItems);
@@ -74,7 +75,7 @@ const cartItemCount = useMemo(() => {
   const value = {
     products,
     currency,
-    delivery_fees,
+    navigate,
     search,
     setSearch,
     showSearch,

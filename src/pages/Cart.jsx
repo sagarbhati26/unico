@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import Title from "../components/Title";
 import { ShopContext } from "../context/shopContext";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { products, currency, cartItems, increaseCartItem, decreaseCartItem,deleteCartItem } = useContext(ShopContext);
+  const { products, currency, cartItems, increaseCartItem, decreaseCartItem, deleteCartItem } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const tempData = [];
@@ -30,47 +32,53 @@ const Cart = () => {
   };
 
   return (
-  <div>
-    <Title text1="Your" text2="Cart" />
-    <hr />
-    <div className="mt-6">
-      {cartData.length > 0 ? (
-        <div>
-          {cartData.map((item) => (
-            <div key={`${item._id}-${item.size}`} className="flex justify-between items-center mb-6 p-4 border rounded-lg">
-              <div className="flex items-center gap-4">
-                <img src={item.image[0]} alt={item.name} className="w-16 h-16 rounded-lg object-cover" />
-                <div>
-                  <h2 className="font-semibold text-lg">{item.name}</h2>
-                  <p className="text-gray-600">Size: {item.size}</p>
-                  <p className="text-green-600 font-semibold">{currency}{item.price}</p>
+    <div>
+      <Title text1="Your" text2="Cart" />
+      <hr />
+      <div className="mt-6">
+        {cartData.length > 0 ? (
+          <div>
+            {cartData.map((item) => (
+              <div key={`${item._id}-${item.size}`} className="flex justify-between items-center mb-6 p-4 border rounded-lg">
+                <div className="flex items-center gap-4">
+                  <img src={item.image[0]} alt={item.name} className="w-16 h-16 rounded-lg object-cover" />
+                  <div>
+                    <h2 className="font-semibold text-lg">{item.name}</h2>
+                    <p className="text-gray-600">Size: {item.size}</p>
+                    <p className="text-green-600 font-semibold">{currency}{item.price}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button onClick={() => decreaseCartItem(item._id, item.size)} className="px-3 py-1 bg-gray-300 rounded-lg font-semibold hover:bg-gray-400 transition">
+                    -
+                  </button>
+                  <span className="font-semibold">{item.quantity}</span>
+                  <button onClick={() => increaseCartItem(item._id, item.size)} className="px-3 py-1 bg-gray-300 rounded-lg font-semibold hover:bg-gray-400 transition">
+                    +
+                  </button>
+                  <button onClick={() => deleteCartItem(item._id, item.size)} className="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
+                    Delete
+                  </button>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <button onClick={() => decreaseCartItem(item._id, item.size)} className="px-3 py-1 bg-gray-300 rounded-lg font-semibold hover:bg-gray-400 transition">
-                  -
-                </button>
-                <span className="font-semibold">{item.quantity}</span>
-                <button onClick={() => increaseCartItem(item._id, item.size)} className="px-3 py-1 bg-gray-300 rounded-lg font-semibold hover:bg-gray-400 transition">
-                  +
-                </button>
-                <button onClick={() => deleteCartItem(item._id, item.size)} className="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
-                  Delete
-                </button>
-              </div>
+            ))}
+            <div className="mt-8 text-right">
+              <h3 className="text-2xl font-bold">Total: {currency}{calculateTotal()}</h3>
             </div>
-          ))}
-          <div className="mt-8 text-right">
-            <h3 className="text-2xl font-bold">Total: {currency}{calculateTotal()}</h3>
           </div>
+        ) : (
+          <p className="text-center text-gray-600">Your cart is empty.</p>
+        )}
+      </div>
+      <div className="flex justify-end my-20">
+        <div className="w-full sm:w-[450px] text-end">
+          <button onClick={() => navigate('/place-order')} className="bg-black text-white text-sm my-8 px-8 py-3">
+            Checkout - {currency}{calculateTotal()}
+          </button>
         </div>
-      ) : (
-        <p className="text-center text-gray-600">Your cart is empty.</p>
-      )}
+      </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 export default Cart;
