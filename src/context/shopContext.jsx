@@ -46,6 +46,18 @@ const decreaseCartItem = (itemId, selectSize) => {
   }
   setCartItems(cartData);
 };
+const deleteCartItem = (productId, size) => {
+  setCartItems(prevCartItems => {
+    const updatedItems = { ...prevCartItems };
+    // Remove the specific size of the product
+    delete updatedItems[productId][size];
+    // If there are no sizes left for the product, remove the product entirely
+    if (Object.keys(updatedItems[productId]).length === 0) {
+      delete updatedItems[productId];
+    }
+    return updatedItems;
+  });
+};
 
 
 useEffect(()=>{
@@ -69,7 +81,7 @@ const cartItemCount = useMemo(() => {
     setShowSearch,
     cartItems,
     addToCart,
-    cartItemCount,increaseCartItem,decreaseCartItem
+    cartItemCount,increaseCartItem,decreaseCartItem,deleteCartItem
   };
 
   return (
