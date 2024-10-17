@@ -9,6 +9,8 @@ const ShopContextProvider = (props) => {
   const shipping="50"
   const [cartItems, setCartItems] = useState({});
   const navigate=useNavigate()
+  const [search, setSearch] = useState(""); // Added search state
+  const [showSearch, setShowSearch] = useState(false);
 
   const addToCart = (itemId, selectSize) => {
     let cartData = structuredClone(cartItems);
@@ -88,10 +90,14 @@ const ShopContextProvider = (props) => {
     increaseCartItem,
     decreaseCartItem,
     deleteCartItem,
-    calculateTotal, 
+    calculateTotal,
     shipping,
     navigate,
-    cartItemCount
+    cartItemCount,
+    search,
+    setSearch,
+    showSearch,   // Ensure showSearch is passed here
+    setShowSearch // Ensure setShowSearch is passed here
     
   };
 
