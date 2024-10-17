@@ -18,6 +18,7 @@ const Product = () => {
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
+  const [warning, setWarning] = useState(false); // Add a warning state
 
   useEffect(() => {
     const product = products.find((item) => item._id === productId);
@@ -26,6 +27,15 @@ const Product = () => {
       setImage(product.image[0]);
     }
   }, [productId, products]);
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      setWarning(true); // Set warning if size is not selected
+    } else {
+      setWarning(false); // Hide warning if size is selected
+      addToCart(productId, selectedSize);
+    }
+  };
 
   // Determine quantity in cart for this specific product and size
   const quantity = cartItems[productId]?.[selectedSize] || 0;
@@ -42,10 +52,11 @@ const Product = () => {
           productData={productData}
           selectedSize={selectedSize}
           onSelectSize={setSelectedSize}
-          addToCart={() => addToCart(productId, selectedSize)}
+          addToCart={handleAddToCart} // Use handleAddToCart instead of addToCart
           increaseCartItem={() => increaseCartItem(productId, selectedSize)}
           decreaseCartItem={() => decreaseCartItem(productId, selectedSize)}
           quantity={quantity}
+          warning={warning} // Pass warning state to ProductInfo
         />
       </div>
       <ProductDetails description={productData.description} />
@@ -55,6 +66,7 @@ const Product = () => {
     <div className="text-center py-20 text-gray-500">Loading...</div>
   );
 };
+
 
 const ProductImageGallery = ({ images, selectedImage, onSelectImage }) => (
   <div className="flex-1 flex flex-col items-center gap-4">
@@ -89,7 +101,8 @@ const ProductInfo = ({
   addToCart,
   increaseCartItem,
   decreaseCartItem,
-  quantity
+  quantity,
+  warning
 }) => (
   <div className="flex-1 text-gray-800">
     <h1 className="text-3xl font-bold mb-4">{productData.name}</h1>
@@ -125,6 +138,9 @@ const ProductInfo = ({
           </button>
         ))}
       </div>
+      {warning && (
+        <p className="text-red-500 text-sm mt-2">Please select a size before adding to cart.</p>
+      )}
     </div>
 
     {/* Add to Cart / Counter Buttons */}
@@ -160,6 +176,7 @@ const ProductInfo = ({
     </div>
   </div>
 );
+
 
 const ProductDetails = ({ description }) => (
   <div className="mt-20">

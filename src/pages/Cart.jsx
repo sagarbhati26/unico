@@ -13,7 +13,7 @@ const Cart = () => {
     for (const productId in cartItems) {
       for (const size in cartItems[productId]) {
         if (cartItems[productId][size] > 0) {
-          const product = products.find(item => item._id === productId);
+          const product = products.find((item) => item._id === productId);
           if (product) {
             tempData.push({
               ...product,
