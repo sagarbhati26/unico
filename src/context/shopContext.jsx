@@ -1,5 +1,6 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import { products } from "../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext();
 
@@ -7,6 +8,7 @@ const ShopContextProvider = (props) => {
   const currency = "Rs.";
   const shipping="50"
   const [cartItems, setCartItems] = useState({});
+  const navigate=useNavigate()
 
   const addToCart = (itemId, selectSize) => {
     let cartData = structuredClone(cartItems);
@@ -72,6 +74,11 @@ const ShopContextProvider = (props) => {
       return total;
     }, 0).toFixed(2);
   };
+  const cartItemCount = useMemo(() => {
+    return Object.values(cartItems).reduce((total, item) => {
+      return total + Object.values(item).reduce((acc, qty) => acc + qty, 0);
+    }, 0);
+  }, [cartItems]);
 
   const value = {
     products,
@@ -82,8 +89,10 @@ const ShopContextProvider = (props) => {
     decreaseCartItem,
     deleteCartItem,
     calculateTotal, 
-    shipping
-    // Expose calculateTotal to the context
+    shipping,
+    navigate,
+    cartItemCount
+    
   };
 
   return (

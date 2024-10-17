@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
 import Title from "../components/Title";
 import { ShopContext } from "../context/shopContext";
+import { Navigate } from "react-router-dom";
 
 const PlaceOrder = () => {
-  const { calculateTotal, currency,shipping } = useContext(ShopContext); // Access calculateTotal and currency
+  const { calculateTotal, currency,shipping,navigate } = useContext(ShopContext); // Access calculateTotal and currency
 
   return (
     <div className="flex flex-col lg:flex-row max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md space-y-4 lg:space-y-0 lg:space-x-6">
@@ -93,7 +94,7 @@ const PlaceOrder = () => {
         </div>
 
         {/* Place Order Button */}
-        <button className="w-full mt-8 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+        <button onClick={()=>navigate('/orders')} className="w-full mt-8 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
           Place Order
         </button>
       </div>

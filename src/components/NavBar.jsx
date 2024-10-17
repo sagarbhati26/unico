@@ -5,8 +5,9 @@ import { ShopContext } from "../context/shopContext";
 
 const NavBar = () => {
   const [visible, setVisible] = useState(false);
-  const {setShowSearch,cartItemCount } = useContext(ShopContext);
+  const { setShowSearch, cartItemCount } = useContext(ShopContext);
 
+  // Component for NavLinks to handle active styling
   const NavLinkComponent = ({ to, label }) => (
     <NavLink
       to={to}
@@ -34,9 +35,11 @@ const NavBar = () => {
   return (
     <nav className="relative bg-white shadow-sm py-4 px-5">
       <div className="flex items-center justify-between font-medium">
-        <Link to='/'>
+        {/* Logo */}
+        <Link to="/">
           <img src={assets.logo} className="w-36" alt="Logo" />
         </Link>
+
         {/* Desktop NavLinks */}
         <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
           {navLinks.map((link) => (
@@ -46,6 +49,7 @@ const NavBar = () => {
 
         {/* Icons: Search, Profile, Cart, Menu */}
         <div onClick={() => setShowSearch(true)} className="flex items-center gap-6">
+          {/* Search Icon */}
           <img
             src={assets.search_icon}
             className="w-5 cursor-pointer hover:opacity-80 transition-opacity"
@@ -53,6 +57,7 @@ const NavBar = () => {
             aria-label="Search"
           />
 
+          {/* Profile Icon with Dropdown */}
           <div className="group relative">
             <img
               className="w-5 cursor-pointer hover:opacity-80 transition-opacity"
@@ -67,20 +72,22 @@ const NavBar = () => {
             </div>
           </div>
 
+          {/* Cart Icon with Item Count Badge */}
           <Link to="/cart" className="relative">
-  <img
-    src={assets.cart_icon}
-    className="w-5 cursor-pointer hover:opacity-80 transition-opacity"
-    alt="Cart"
-    aria-label="Cart"
-  />
-  {cartItemCount > 0 && (
-    <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-6 h-6 flex items-center justify-center font-bold shadow-md transform transition-transform duration-300 ease-in-out hover:scale-110">
-      {cartItemCount}
-    </span>
-  )}
-</Link>
+            <img
+              src={assets.cart_icon}
+              className="w-5 cursor-pointer hover:opacity-80 transition-opacity"
+              alt="Cart"
+              aria-label="Cart"
+            />
+            {cartItemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-6 h-6 flex items-center justify-center font-bold shadow-md transform transition-transform duration-300 ease-in-out hover:scale-110">
+                {cartItemCount}
+              </span>
+            )}
+          </Link>
 
+          {/* Mobile Menu Icon */}
           <img
             onClick={() => setVisible(true)}
             src={assets.menu_icon}
