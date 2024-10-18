@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
-  const currency = "Rs.";
+  const currency = " MRP Rs.";
   const shipping="50"
   const [cartItems, setCartItems] = useState({});
   const navigate=useNavigate()
