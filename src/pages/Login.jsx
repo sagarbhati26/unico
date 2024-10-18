@@ -2,13 +2,36 @@ import React, { useState } from 'react'
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Sign Up')
-  const onSubmitHandler = async(event)=>{
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  })
+
+  const onChangeHandler = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const onSubmitHandler = async (event) => {
     event.preventDefault()
+    setLoading(true)
+    setMessage('')
+
+    // Simulate form submission
+    setTimeout(() => {
+      setLoading(false)
+      setMessage('Form submitted successfully!')
+    }, 2000)
   }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-      <form onSubmit={onSubmitHandler} className="bg-white p-8 rounded-lg shadow-md w-full max-w-md space-y-4">
+      <form
+        onSubmit={onSubmitHandler}
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-md space-y-4"
+      >
         {/* Title and Toggle between Login and Sign Up */}
         <div className="text-center mb-4">
           <p className="text-4xl font-semibold text-gray-800">{currentState}</p>
@@ -19,6 +42,9 @@ const Login = () => {
         {currentState === 'Sign Up' && (
           <input
             type="text"
+            name="name"
+            value={formData.name}
+            onChange={onChangeHandler}
             className="w-full p-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-green-900"
             placeholder="Enter your name"
             required
@@ -28,6 +54,9 @@ const Login = () => {
         {/* Email input */}
         <input
           type="email"
+          name="email"
+          value={formData.email}
+          onChange={onChangeHandler}
           className="w-full p-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-green-900"
           placeholder="Enter your email"
           required
@@ -36,6 +65,9 @@ const Login = () => {
         {/* Password input */}
         <input
           type="password"
+          name="password"
+          value={formData.password}
+          onChange={onChangeHandler}
           className="w-full p-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-green-900"
           placeholder="Enter your password"
           required
@@ -64,10 +96,20 @@ const Login = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-900 text-white py-3 rounded-lg font-bold text-lg transition duration-300"
+          disabled={loading}
+          className={`w-full ${
+            loading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-900'
+          } text-white py-3 rounded-lg font-bold text-lg transition duration-300`}
         >
-          {currentState === 'Login' ? 'Sign In' : 'Sign Up'}
+          {loading ? 'Processing...' : currentState === 'Login' ? 'Sign In' : 'Sign Up'}
         </button>
+
+        {/* Display Message */}
+        {message && (
+          <div className="mt-4 text-center text-green-700 font-semibold">
+            {message}
+          </div>
+        )}
       </form>
     </div>
   )
