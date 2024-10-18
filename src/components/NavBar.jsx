@@ -59,12 +59,14 @@ const NavBar = () => {
 
           {/* Profile Icon with Dropdown */}
           <div className="group relative">
+            <Link to='/login'>
             <img
               className="w-5 cursor-pointer hover:opacity-80 transition-opacity"
               src={assets.profile_icon}
               alt="Profile"
               aria-label="Profile"
             />
+            </Link>
             <div className="group-hover:block hidden absolute right-0 top-full mt-2 py-3 px-5 bg-white shadow-lg rounded-lg">
               <p className="cursor-pointer hover:text-green-700">My Profile</p>
               <p className="cursor-pointer hover:text-green-700">Orders</p>
